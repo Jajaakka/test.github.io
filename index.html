@@ -85,6 +85,50 @@
         let health = 100;
         let speed = 1000;
 
+        const startTime = Date.now();
+        const timeLimit = 60; // in seconds
+
+        function checkTime() {
+          const currentTime = Date.now();
+          const elapsedTime = currentTime - startTime;
+            if (elapsedTime > timeLimit * 1000) {
+                alert("You ran out of time!");
+                resetGame();
+              }
+        }
+
+        setInterval(checkTime, 1000);
+
+        const landmines = [];
+
+        function createLandmine() {
+          const landmine = document.createElement("div");
+          landmine.className = "landmine";
+          landmine.style.position = "absolute";
+          landmine.style.left = Math.floor(Math.random() * gameContainer.clientWidth) + "px";
+          landmine.style.top = Math.floor(Math.random() * gameContainer.clientHeight) + "px";
+          landmine.style.background = "red";
+          landmine.style.borderRadius = "50%";
+          landmine.style.width = "50px";
+          landmine.style.height = "50px";
+          landmine.style.margin = "10px";
+          landmine.style.cursor = "pointer";
+          landmine.onclick = function() {
+          alert("You stepped on a landmine!");
+          resetGame();
+      };
+      gameContainer.appendChild(landmine);
+      landmines.push(landmine);
+    }
+
+    for (let i = 0; i < 10; i++) {
+      createLandmine();
+    }
+
+
+
+        
+        
         function updateTarget() {
             const maxX = gameContainer.clientWidth - target.clientWidth;
             const maxY = gameContainer.clientHeight - target.clientHeight;
@@ -128,6 +172,7 @@
                 resetGame();
             }
         });
+
 
         setInterval(() => {
             updateTarget();
