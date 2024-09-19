@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Impossible Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #target {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        #health-bar {
+            width: 200px;
+            height: 20px;
+            background-color: #ddd;
+            margin: 10px auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #health {
+            width: 100%;
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.5s;
+        }
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>The Impossible Challenge</h1>
+        <div id="health-bar"><div id="health"></div></div>
+        <div id="target"></div>
+        <p id="score">Score: 0</p>
+        <p id="instruction">Click the red dot 100 times to win!</p>
+    </div>
+
+    <script>
+        const target = document.getElementById('target');
+        const scoreElement = document.getElementById('score');
+        const healthBar = document.getElementById('health');
+        const gameContainer = document.getElementById('game-container');
+
+        let score = 0;
+        let health = 100;
+        let speed = 1000;
+
+        function updateTarget() {
+            const maxX = gameContainer.clientWidth - target.clientWidth;
+            const maxY = gameContainer.clientHeight - target.clientHeight;
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            target.style.transform = `translate(${newX}px, ${newY}px)`;
+            target.style.backgroundColor = `rgb(${Math.random()*255},${Math.random()*255},${Math.random()*255})`;
+        }
+
+        function updateHealth() {
+            health -= 5;
+            healthBar.style.width = `${health}%`;
+            if (health <= 0) {
+                alert('Game Over! You ran out of health.');
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            health = 100;
+            speed = 1000;
+            scoreElement.textContent = `Score: ${score}`;
+            healthBar.style.width = '100%';
+        }
+
+        target.addEventListener('click', () => {
+            score++;
+            scoreElement.textContent = `Score: ${score}`;
+            updateTarget();
+            speed *= 0.95;
+            
+            if (score % 10 === 0) {
+                health = Math.min(health + 10, 100);
+                healthBar.style.width = `${health}%`;
+            }
+
+            if (score >= 100) {
+                alert('Congratulations! You beat the impossible challenge!');
+                resetGame();
+            }
+        });
+
+        setInterval(() => {
+            updateTarget();
+            updateHealth();
+            gameContainer.classList.add('shake');
+            setTimeout(() => gameContainer.classList.remove('shake'), 500);
+        }, speed);
+    </script>
+</body>
+</html>
